@@ -29,9 +29,6 @@ sed -i 's/#\(HandleSuspendKey=\)suspend/\1ignore/' /etc/systemd/logind.conf
 sed -i 's/#\(HandleHibernateKey=\)hibernate/\1ignore/' /etc/systemd/logind.conf
 sed -i 's/#\(HandleLidSwitch=\)suspend/\1ignore/' /etc/systemd/logind.conf
 
-echo "devbox" > /etc/hostname
-sed -i '$i 127.0.1.1	devbox	localdomain' /etc/hosts
-
 sed -i '0,/GRUB_CMDLINE_LINUX=""/s//GRUB_CMDLINE_LINUX="lvm resume=\/dev\/mapper\/vgrp-swap root=\/dev\/mapper\/vgrp-root"/' /etc/default/grub
 
 #echo "vboxguest" >> /etc/modules-load.d/virtualbox.conf

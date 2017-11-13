@@ -120,13 +120,13 @@ make_lvm() {
 # sed -i 's/^HOOKES=\(.*\)block/\0 lvm2 resume/' /etc/mkinitcpio.conf
 
 
-#if [ -z "$2" ]; then
-#  echo "Adding hostname"
-#  echo "$2" > /etc/hostname
-#  sed -i '$i 127.0.1.1	'"$2"'	localdomain' /etc/hosts
-#else
-#  echo "Missing hostname param. Skipping"
-#fi
+if [ -z "$2" ]; then
+  echo "Adding hostname"
+  echo "$2" > /etc/hostname
+  sed -i '$i 127.0.1.1	'"$2"'	localdomain' /etc/hosts
+else
+  echo "Missing hostname param. Skipping"
+fi
 
 #echo "Setting US Eastern locales"
 #sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/local.gen
