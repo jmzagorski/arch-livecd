@@ -38,9 +38,9 @@ _usage () {
   echo "usage ${0} [options]"
   echo
   echo " General options:"
-  echo "    -s <swap_space>      Sets the swap space (e.g 2GB)"
+  echo "    -s <swap_space>    Sets the swap space (e.g 2GB)"
   echo "    -o <host_name>     Set the host name"
-  echo "    -e                 Enable encryption"
+  echo "    -e <encryption>    Enable encryption"
   echo "    -h                 This help message"
   exit ${1}
 }
@@ -120,10 +120,10 @@ make_lvm() {
 # sed -i 's/^HOOKES=\(.*\)block/\0 lvm2 resume/' /etc/mkinitcpio.conf
 
 
-if [ -z "$2" ]; then
+if [[ ${hostname} ]]; then
   echo "Adding hostname"
-  echo "$2" > /etc/hostname
-  sed -i '$i 127.0.1.1	'"$2"'	localdomain' /etc/hosts
+  echo "$hostname" > /etc/hostname
+  sed -i '$i 127.0.1.1	'"$hostname"'	localdomain' /etc/hosts
 else
   echo "Missing hostname param. Skipping"
 fi
@@ -141,7 +141,7 @@ unmount() {
   umount /mnt -R
 }
 
-while getopts 's:o:eh' arg; do
+while getopts 's:o:e:h' arg; do
   case "${arg}" in
     s) swap="${OPTARG}" ;;
     o) hostname="${OPTARG}" ;;
