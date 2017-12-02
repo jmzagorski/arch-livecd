@@ -22,14 +22,16 @@ useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storag
 chown -R jeremy:users /home/jeremy
 
 sed -i 's/#\(PermitRootLogin \).\+/\1yes/' /etc/ssh/sshd_config
+# uncomment every mirror
 sed -i "s/#Server/Server/g" /etc/pacman.d/mirrorlist
+# store the journal entries in memory as opposed to disk
 sed -i 's/#\(Storage=\)auto/\1volatile/' /etc/systemd/journald.conf
-
+# ignore all the key actions
 sed -i 's/#\(HandleSuspendKey=\)suspend/\1ignore/' /etc/systemd/logind.conf
 sed -i 's/#\(HandleHibernateKey=\)hibernate/\1ignore/' /etc/systemd/logind.conf
 sed -i 's/#\(HandleLidSwitch=\)suspend/\1ignore/' /etc/systemd/logind.conf
 
-sed -i '0,/GRUB_CMDLINE_LINUX=""/s//GRUB_CMDLINE_LINUX="lvm resume=\/dev\/mapper\/vgrp-swap root=\/dev\/mapper\/vgrp-root"/' /etc/default/grub
+#sed -i '0,/GRUB_CMDLINE_LINUX=""/s//GRUB_CMDLINE_LINUX="lvm resume=\/dev\/mapper\/vgrp-swap root=\/dev\/mapper\/vgrp-root"/' /etc/default/grub
 
 #echo "vboxguest" >> /etc/modules-load.d/virtualbox.conf
 #echo "vboxsf" >> /etc/modules-load.d/virtualbox.conf
