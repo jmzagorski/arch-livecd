@@ -136,7 +136,8 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 # Importing archlinux keys, ususally done by pacstrap
 pacman-key --init
 pacman-key --populate archlinux
-# make journal available since it will be in RAM
+# make journal available since it will be in RAM - TODO should be configurable
+# in options
 sed -i 's/Storage=volatile/#Storage=auto/' /etc/systemd/journald.conf
 # Disable and remove the services created by archiso
 systemctl disable pacman-init.service choose-mirror.service

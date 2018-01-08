@@ -1,17 +1,22 @@
+# LAMP
+#apache
+#php-apache
+#mariadb
+
 # i3
-i3
-acl
-acpi
-firefox
-imagemagick
-rofi
-scrot
-wpa_supplicant
-xorg-server
-xorg-xinit
+#i3
+#acl
+#acpi
+#firefox
+#imagemagick
+#rofi
+#scrot
+#wpa_supplicant
+#xorg-server
+#xorg-xinit
 
 # audio
-alsa-utils
+#alsa-utils
 
 # vbox
 #virtualbox-guest-dkms
@@ -19,29 +24,30 @@ alsa-utils
 #linux-headers
 
 # dev
-adobe-source-code-pro-fonts
-adobe-source-sans-pro-fonts
-bash-completion
-compton
-curl
-feh
-gawk
-git
-grep
-gvim
-gzip
-less
-python
-python2
-termite
-sed
-vi
-vim-runtime
+#adobe-source-code-pro-fonts
+#adobe-source-sans-pro-fonts
+#bash-completion
+#compton
+#curl
+#feh
+#gawk
+#git
+#grep
+#gvim
+#gzip
+#less
+#python
+#python2
+#termite
+#sed
+#vi
+#vim-runtime
+docker
 
 # archiso
 arch-install-scripts
-b43-fwcutter
-btrfs-progs
+#b43-fwcutter # broadcom wifi driver
+#btrfs-progsa #Btrfs file system
 clonezilla
 ddrescue
 dhclient
