@@ -42,58 +42,62 @@
 #sed
 #vi
 #vim-runtime
-docker
+#docker
+
+# installation
+# for wiptail
+libnewt
 
 # archiso
 arch-install-scripts
 #b43-fwcutter # broadcom wifi driver
 #btrfs-progsa #Btrfs file system
-clonezilla
-ddrescue
+#clonezilla
+#ddrescue
 dhclient
-dialog
-dmraid
-dosfstools
-ethtool
-exfat-utils
-f2fs-tools
-gpm
+#dialog # use whiptail
+#dmraid
+#dosfstools
+#ethtool
+#exfat-utils
+#f2fs-tools
+#gpm #general purpose mouse
 gptfdisk
 grub
-hdparm
-ipw2100-fw
-ipw2200-fw
-lftp
-mtools
-ndisc6
-nfs-utils
-nilfs-utils
-nmap
-ntfs-3g
-ntp
-openconnect
-partclone
-parted
-partimage
-ppp
-pptpclient
-refind-efi
-rp-pppoe
-rsync
-sdparm
-sg3_utils
-smartmontools
-speedtouch
+#hdparma #set and view hardware parameters
+#ipw2100-fw # wireless driver
+#ipw2200-fw  #wireless driver 
+#lftp
+#mtools #access DOS disks
+#ndisc6
+#nfs-utils #network file storage
+#nilfs-utils #log structure
+#nmap
+#ntfs-3g
+#ntp
+#openconnect connect to cisco vpn
+#partclone backup and restore partitions
+#parted
+#partimage #image backup
+#ppp #point to point
+#pptpclient
+# efi boots
+# refind-efi 
+#rp-pppoe # ppoe servers
+#rsync
+#sdparm
+#sg3_utils
+#smartmontools
+#speedtouch # for modem
 sudo
-sysstat
-tar
-tcpdump
-testdisk
-ttf-font-awesome
-usb_modeswitch
-vpnc
-wget
-wireless_tools
-wpa_actiond
-wvdial
-zd1211-firmware
+#sysstat
+#tar
+#tcpdump
+#testdisk
+#usb_modeswitch
+#vpnc
+#wget
+#wireless_tools depricated
+#wpa_actiond # handles wifi connect/disconnect
+#wvdial # modem dialer
+#zd1211-firmware Zydas wireless via USB
