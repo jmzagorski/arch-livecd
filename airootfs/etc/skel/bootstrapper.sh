@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# exit if anything errors in this script
 set -e
 command -v whiptail >/dev/null 2>&1 || { echo "whiptail required for this script" >&2 ; exit 1 ; }
 
@@ -20,7 +21,7 @@ bootstrapper_dialog --title "Welcome" --msgbox "\nWelcome to Jeremy's Arch Linux
 ################################################################################
 # UEFI / BIOS detection
 ################################################################################
-efivar -l >/dev/null 2>&1
+command -v efivar >/dev/null 2>&1 && efivar -l >/dev/null 2>&1
 
 if [[ $? -eq 0 ]]; then
   UEFI_BIOS_text="UEFI detected."
@@ -75,7 +76,6 @@ else
   reset
   echo "Zapping disk"
   sgdisk --zap-all /dev/sda
-  [[ $UEFI -eq 0 ]] && printf "r\ng\nw\ny\n" | gdisk /dev/sda
 fi
 
 # Hope the kernel can read the new partition table. Partprobe usually fails...
