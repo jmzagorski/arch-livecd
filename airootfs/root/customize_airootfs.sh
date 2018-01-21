@@ -14,12 +14,6 @@ ln -sf /usr/share/zoneinfo/US/Eastern /etc/localtime
 usermod -s /usr/bin/bash root
 cp -aT /etc/skel/ /root/
 
-# TODO move to bootstrapper
-useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel" -s /bin/bash jeremy
-#chmod 700 /root
-
-chown -R jeremy:users /home/jeremy
-
 # TODO put in bootstrapper as configurable
 # ignore all the key actions
 sed -i 's/#\(HandleSuspendKey=\)suspend/\1ignore/' /etc/systemd/logind.conf

@@ -2,6 +2,7 @@
 
 # exit if anything errors in this script
 set -e
+
 command -v whiptail >/dev/null 2>&1 || { echo "whiptail required for this script" >&2 ; exit 1 ; }
 
 ################################################################################
@@ -37,22 +38,28 @@ bootstrapper_dialog --title "UEFI or BIOS" --radiolist "${UEFI_BIOS_text}\nPress
 [[ $DIALOG_RESULT -eq 1 ]] && UEFI=1 || UEFI=0
 
 ################################################################################
-# Prompts
+# Customizations
 ################################################################################
 bootstrapper_dialog --title "Hostname" --inputbox "\nPlease enter a name for this host.\n" 10 60
 hostname="$DIALOG_RESULT"
 
-################################################################################
-# Password prompts
-################################################################################
 bootstrapper_dialog --title "Disk encryption" --passwordbox "\nEnternter a strong passphrase for the disk encryption.\nLeave blank if you don't want encryption.\n" 10 60
 encryption_passphrase="$DIALOG_RESULT"
 
 bootstrapper_dialog --title "Root password" --passwordbox "\nEnter a strong password for the root user.\n" 10 60
 root_password="$DIALOG_RESULT"
 
+bootstrapper_dialog --title "Swap Space" --inputbox "\nEnter swap space.\nLeave blank if you don't want swap space.\n" 10 60
+swap_space="$DIALOG_RESULT"
+
+bootstrapper_dialog --title "Admin" --inputbox "\nEnter admin user name.\n" 10 60
+admin_user="$DIALOG_RESULT"
+
+bootstrapper_dialog --title "Admin Password" --inputbox "\nEnter admin password.\n" 10 60
+admin_password="$DIALOG_RESULT"
+
 ################################################################################
-# Warning
+# Wipe Disk, either quick zap or full shred
 ################################################################################
 bootstrapper_dialog --title "WARNING" --yesno "\nThis script will NUKE /dev/sda from orbit.\nPress <Enter> to continue or <Esc> to cancel.\n" 10 60
 clear
@@ -64,9 +71,6 @@ fi
 bootstrapper_dialog --title "Full or Quick Wipe" --radiolist "Quick Zap or Full Shred?\nPress <Enter> to accept." 10 40 2 1 FULLWIPE "Full" 2 QUICKWIPE "Quick"
 [[ $DIALOG_RESULT -eq 1 ]] && FULLWIPE=1 || FULLWIPE=0
 
-################################################################################
-# Reset the screen Nuke and set up disk partitions
-################################################################################
 if [[ $FULLWIPE -eq 1 ]]; then
   bootstrapper_dialog --title "Full Wipe Iterations" --inputbox "\nPlease the number of iterations.\n" 10 60
   iterations="$DIALOG_RESULT"
@@ -81,6 +85,9 @@ fi
 # Hope the kernel can read the new partition table. Partprobe usually fails...
 blockdev --rereadpt /dev/sda
 
+################################################################################
+# Create disks
+################################################################################
 echo "Creating /dev/sda1"
 if [[ $UEFI -eq 1 ]]; then
   printf "n\n1\n\n+1G\nef00\nw\ny\n" | gdisk /dev/sda
@@ -112,7 +119,10 @@ echo "Setting up LVM"
 pvcreate --force $physical_volume
 vgcreate vg1 $physical_volume
 lvcreate -L 20G vg1 -n lvroot
-lvcreate -L 4G -n swap vg1
+if [[ ! -z $swap_space ]]; then
+  echo "Setting up swap space"
+  lvcreate -L ${swap_space} -n swap vg1
+fi
 lvcreate -l +100%FREE vg1 -n lvhome
 
 
@@ -120,8 +130,11 @@ echo "Creating ext4 file systems on top of logical volumes"
 mkfs.ext4 /dev/mapper/vg1-lvroot
 mkfs.ext4 /dev/mapper/vg1-lvhome
 
-mkswap /dev/mapper/vg1-swap
-swapon /dev/mapper/vg1-swap
+if [[ ! -z $swap_space ]]; then
+  echo "Turning on swap space"
+  mkswap /dev/mapper/vg1-swap
+  swapon /dev/mapper/vg1-swap
+fi
 
 ################################################################################
 # Install Arch
@@ -139,8 +152,7 @@ genfstab -U -p /mnt >> /mnt/etc/fstab
 # Importing archlinux keys, ususally done by pacstrap
 pacman-key --init
 pacman-key --populate archlinux
-# make journal available since it will be in RAM - TODO should be configurable
-# in options
+# make journal available since it will be in RAM 
 sed -i 's/Storage=volatile/#Storage=auto/' /etc/systemd/journald.conf
 # Disable and remove the services created by archiso
 systemctl disable pacman-init.service choose-mirror.service
@@ -157,6 +169,9 @@ sed -i "s/^HOOKS.*/HOOKS=\"base udev autodetect modconf block keyboard ${encrypt
 mkinitcpio -p linux
 echo "Setting root password"
 echo "root:${root_password}" | chpasswd
+useradd -m -p "" -g users -G "adm,audio,floppy,log,network,rfkill,scanner,storage,optical,power,wheel" -s /bin/bash ${admin_user}
+echo "${admin_user}:${admin_password}" | chpasswd
+chown -R ${admin_user}:users /home/${admin_user}
 EOF
 
 ################################################################################
@@ -189,7 +204,6 @@ arch-chroot /mnt /bin/bash <<EOF
   rm -r /etc/initcpio
 EOF
 fi
-
 
 ################################################################################
 # End
